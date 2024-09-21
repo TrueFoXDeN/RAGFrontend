@@ -6,7 +6,8 @@
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "format": "prettier --write src/**/*.{ts,html} && sass-lint src/**/*.sass"
   },
   "private": true,
   "dependencies": {
@@ -18,9 +19,11 @@
     "@angular/platform-browser": "^18.2.0",
     "@angular/platform-browser-dynamic": "^18.2.0",
     "@angular/router": "^18.2.0",
+    "prettier": "^3.3.3",
     "primeicons": "^7.0.0",
     "primeng": "^17.18.10",
     "rxjs": "~7.8.0",
+    "sass-lint": "^1.13.1",
     "tslib": "^2.3.0",
     "zone.js": "~0.14.10"
   },
