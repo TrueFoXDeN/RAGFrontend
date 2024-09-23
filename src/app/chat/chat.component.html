@@ -1,12 +1,13 @@
 <div class="flex flex-col w-full h-screen bg-[#212121]">
   <div class="h-12"></div>
-  <div #chatContent class="flex flex-col max-h-[85vh] overflow-auto pb-8">
+  <div #chatContent class="flex flex-1 flex-col max-h-[85vh] overflow-auto pb-8">
     <app-response-bubble></app-response-bubble>
     <app-prompt-bubble></app-prompt-bubble>
+    <app-response-bubble></app-response-bubble>
   </div>
-  <div class="absolute bottom-8 w-full">
+  <div class=" w-[48rem] mx-auto">
     <div
-      class="flex mx-auto md:gap-5 lg:gap-6 md:max-w-3xl lg:max-w-[40rem] xl:max-w-[48rem]"
+      class="flex mx-auto w-[48rem]"
     >
       <div class="flex w-full rounded-[26px] bg-[#2f2f2f]">
         <textarea
