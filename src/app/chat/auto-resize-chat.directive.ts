@@ -1,12 +1,11 @@
-import {Directive, ElementRef, HostListener} from '@angular/core';
+import { Directive, ElementRef, HostListener } from '@angular/core';
 
 @Directive({
   selector: 'textarea[autoResize]',
-  standalone: true
+  standalone: true,
 })
 export class AutoResizeChatDirective {
-
-  constructor(private element: ElementRef) { }
+  constructor(private element: ElementRef) {}
 
   @HostListener('input') onInput() {
     this.adjustTextareaHeight();
@@ -23,10 +22,9 @@ export class AutoResizeChatDirective {
     textarea.style.height = 'auto'; // Setze Höhe zurück, um den tatsächlichen Inhalt zu messen
 
     let newHeight = textarea.scrollHeight;
-    if(newlineCount == 0){
-      newHeight -= 24
+    if (newlineCount == 0) {
+      newHeight -= 24;
     }
-    textarea.style.height = Math.min(newHeight, 408)+ 'px'; // Passe die Höhe an den Inhalt an
+    textarea.style.height = Math.min(newHeight, 408) + 'px'; // Passe die Höhe an den Inhalt an
   }
-
 }
