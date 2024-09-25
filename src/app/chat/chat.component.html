@@ -4,19 +4,19 @@
     #chatContent
     class="flex flex-1 flex-col max-h-[86vh] overflow-auto pb-8"
   >
-    @for(message of messages; track message){
-      @if (message.type === 'prompt'){
+    @for (message of messages; track message) {
+      @if (message.type === "prompt") {
         <app-prompt-bubble [text]="message.text"></app-prompt-bubble>
-      } @else if (message.type === 'response'){
+      } @else if (message.type === "response") {
         <app-response-bubble [text]="message.text"></app-response-bubble>
       }
     }
-
   </div>
   <div class="w-[48rem] mx-auto mt-5 mb-5">
     <div class="flex mx-auto w-[48rem]">
       <div class="flex w-full rounded-[26px] bg-[#2f2f2f] px-3 items-end">
-        <textarea #chatInput
+        <textarea
+          #chatInput
           autoResize
           class="text-white placeholder:!text-gray-400 leading-6 bg-transparent mx-5 focus:border-0 py-3 focus:outline-0 w-full resize-none overflow-auto"
           placeholder="Sende eine Nachricht"
@@ -31,7 +31,7 @@
             'bg-white hover:bg-[#c1c1c1]': isTextEntered,
             'bg-[#676767] text-[#2f2f2f]': !isTextEntered,
           }"
-          (click)="sendPrompt()"
+          (click)="onButtonPress()"
         >
           <i class="pi pi-arrow-up"></i>
         </div>

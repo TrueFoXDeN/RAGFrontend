@@ -57,21 +57,29 @@ export class ChatComponent implements AfterViewChecked {
       return;
     }
 
-    const textareaElement = this.chatInput.nativeElement;
-
-
     event.preventDefault();
     this.sendPrompt();
+  }
 
-    if (textareaElement) {
-      textareaElement.style.height = 48 + 'px'; // Triggere das 'input'-Event manuell
-    }
-
+  onButtonPress() {
+    this.sendPrompt();
   }
 
   sendPrompt() {
+    if (this.isTextEntered) {
+      const textareaElement = this.chatInput.nativeElement;
 
-    this.messages.push({ text: this.messageText, type: 'prompt', context: {} });
-    this.messageText = '';
+      if (textareaElement) {
+        textareaElement.style.height = 48 + 'px';
+      }
+      this.isTextEntered = false;
+      this.scrollToBottom();
+      this.messages.push({
+        text: this.messageText,
+        type: 'prompt',
+        context: {},
+      });
+      this.messageText = '';
+    }
   }
 }
