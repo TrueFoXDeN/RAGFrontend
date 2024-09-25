@@ -27,8 +27,11 @@ import { FormsModule } from '@angular/forms';
 })
 export class ChatComponent implements AfterViewChecked {
   @ViewChild('chatContent') private chatContent!: ElementRef;
+  @ViewChild('chatInput') private chatInput!: ElementRef;
+
   messageText: string = ''; // Holds the textarea content
   isTextEntered: boolean = false;
+  messages: any = [];
 
   onInputChange() {
     this.isTextEntered = this.messageText.length > 0;
@@ -45,5 +48,30 @@ export class ChatComponent implements AfterViewChecked {
     } catch (err) {
       console.log('Error while scrolling:', err);
     }
+  }
+
+  onEnter(event: Event) {
+    const keyboardEvent = event as KeyboardEvent;
+    if (keyboardEvent.shiftKey) {
+      // Wenn Shift + Enter gedrückt wird, füge eine neue Zeile ein
+      return;
+    }
+
+    const textareaElement = this.chatInput.nativeElement;
+
+
+    event.preventDefault();
+    this.sendPrompt();
+
+    if (textareaElement) {
+      textareaElement.style.height = 48 + 'px'; // Triggere das 'input'-Event manuell
+    }
+
+  }
+
+  sendPrompt() {
+
+    this.messages.push({ text: this.messageText, type: 'prompt', context: {} });
+    this.messageText = '';
   }
 }

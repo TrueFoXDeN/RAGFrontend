@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 
 @Component({
   selector: 'app-prompt-bubble',
@@ -7,4 +7,6 @@ import { Component } from '@angular/core';
   templateUrl: './prompt-bubble.component.html',
   styleUrl: './prompt-bubble.component.sass',
 })
-export class PromptBubbleComponent {}
+export class PromptBubbleComponent {
+  @Input() text: string = '';
+}

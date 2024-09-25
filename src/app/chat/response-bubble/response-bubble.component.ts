@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 
 @Component({
   selector: 'app-response-bubble',
@@ -7,4 +7,6 @@ import { Component } from '@angular/core';
   templateUrl: './response-bubble.component.html',
   styleUrl: './response-bubble.component.sass',
 })
-export class ResponseBubbleComponent {}
+export class ResponseBubbleComponent {
+  @Input() text: string = '';
+}
