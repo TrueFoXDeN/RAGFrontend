@@ -39,6 +39,7 @@ export class ChatComponent implements AfterViewChecked {
   response: string = '';
   context: string = '';
   contextActive = true;
+  codeBlockActive: boolean = false;
   // messages: any = [];
 
   constructor(
@@ -116,8 +117,20 @@ export class ChatComponent implements AfterViewChecked {
           if (this.contextActive) {
             this.chatService.messages[index].context = data;
           } else {
-            data = data.replaceAll('[NEWLINE][NEWLINE]', '  <br><br>');
-            data = data.replaceAll('[NEWLINE]', '  <br>');
+            let tempMessage = this.chatService.messages[index].text + data;
+            // Herausfinden ob Anzahl ` im text ungerade ist -> wenn ja, innerhalb des codeblocks
+            this.codeBlockActive =
+              (tempMessage.match(/`/g) || []).length % 2 !== 0;
+            if (this.codeBlockActive) {
+              data = data.replaceAll('[NEWLINE][NEWLINE]', '  \n\n');
+            } else {
+              data = data.replaceAll(
+                '[NEWLINE][NEWLINE]',
+                '  \n&nbsp;&nbsp;\n',
+              );
+            }
+
+            data = data.replaceAll('[NEWLINE]', '  \n');
 
             this.chatService.messages[index].text += data;
             this.cdr.markForCheck();
@@ -129,6 +142,7 @@ export class ChatComponent implements AfterViewChecked {
       });
       this.messageText = '';
       this.contextActive = true;
+      this.codeBlockActive = false;
     }
   }
 
