@@ -1,5 +1,6 @@
 import {
-  AfterViewChecked, ChangeDetectorRef,
+  AfterViewChecked,
+  ChangeDetectorRef,
   Component,
   ElementRef,
   ViewChild,
@@ -43,7 +44,7 @@ export class ChatComponent implements AfterViewChecked {
   constructor(
     protected chatService: ChatService,
     private ragService: RagService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
   ) {}
 
   onInputChange() {
@@ -131,6 +132,7 @@ export class ChatComponent implements AfterViewChecked {
         },
       });
       this.messageText = '';
+      this.contextActive = true;
     }
   }
 

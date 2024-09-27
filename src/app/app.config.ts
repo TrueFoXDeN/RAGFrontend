@@ -8,6 +8,11 @@ import { provideRouter } from '@angular/router';
 import { routes } from './app.routes';
 import { provideHttpClient } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import {
+  CLIPBOARD_OPTIONS,
+  ClipboardButtonComponent,
+  provideMarkdown,
+} from 'ngx-markdown';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -15,5 +20,13 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes),
     provideHttpClient(),
     importProvidersFrom([BrowserAnimationsModule]),
+    provideMarkdown({
+      clipboardOptions: {
+        provide: CLIPBOARD_OPTIONS,
+        useValue: {
+          buttonComponent: ClipboardButtonComponent,
+        },
+      },
+    }),
   ],
 };

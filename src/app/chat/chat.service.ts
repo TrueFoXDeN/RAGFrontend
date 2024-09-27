@@ -25,7 +25,7 @@ export class ChatService {
       };
 
       eventSource.onerror = (error) => {
-        observer.error(error);
+        eventSource.close();
       };
 
       return () => eventSource.close();
