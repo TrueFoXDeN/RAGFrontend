@@ -11,6 +11,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {
   CLIPBOARD_OPTIONS,
   ClipboardButtonComponent,
+  MARKED_OPTIONS,
   provideMarkdown,
 } from 'ngx-markdown';
 
@@ -21,10 +22,11 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(),
     importProvidersFrom([BrowserAnimationsModule]),
     provideMarkdown({
-      clipboardOptions: {
-        provide: CLIPBOARD_OPTIONS,
+      markedOptions: {
+        provide: MARKED_OPTIONS,
         useValue: {
-          buttonComponent: ClipboardButtonComponent,
+          gfm: true,
+          breaks: true,
         },
       },
     }),

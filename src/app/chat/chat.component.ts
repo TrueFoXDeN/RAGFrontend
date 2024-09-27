@@ -94,12 +94,6 @@ export class ChatComponent implements AfterViewChecked {
         context: {},
       });
 
-      // this.chatService.health().subscribe({
-      //   next: (data) =>{
-      //     console.log(data);
-      //   }
-      // })
-
       this.chatService.messages.push({
         text: '',
         type: 'response',
@@ -110,19 +104,21 @@ export class ChatComponent implements AfterViewChecked {
 
       this.chatService.startStream(this.messageText).subscribe({
         next: (data) => {
-          if (data == '[CONTEXT-END]') {
+          if (data === '[CONTEXT-END]') {
             this.contextActive = false;
             return;
           }
 
-          if (data == '[DONE]') {
+          if (data === '[DONE]') {
             return;
           }
 
           if (this.contextActive) {
             this.chatService.messages[index].context = data;
           } else {
-            // console.log(data);
+            data = data.replaceAll('[NEWLINE][NEWLINE]', '  <br><br>');
+            data = data.replaceAll('[NEWLINE]', '  <br>');
+
             this.chatService.messages[index].text += data;
             this.cdr.markForCheck();
           }
