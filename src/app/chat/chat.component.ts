@@ -10,6 +10,10 @@ import { AutoResizeChatDirective } from './auto-resize-chat.directive';
 import { Button } from 'primeng/button';
 import { NgClass } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { ChatService } from './chat.service';
+import { RagService } from '../api-client';
+import { HttpEventType } from '@angular/common/http';
+import { filter, map } from 'rxjs';
 
 @Component({
   selector: 'app-chat',
@@ -29,9 +33,17 @@ export class ChatComponent implements AfterViewChecked {
   @ViewChild('chatContent') private chatContent!: ElementRef;
   @ViewChild('chatInput') private chatInput!: ElementRef;
 
-  messageText: string = ''; // Holds the textarea content
+  messageText: string = '';
   isTextEntered: boolean = false;
-  messages: any = [];
+  response: string = '';
+  context: string = '';
+  contextActive = true;
+  // messages: any = [];
+
+  constructor(
+    protected chatService: ChatService,
+    private ragService: RagService,
+  ) {}
 
   onInputChange() {
     this.isTextEntered = this.messageText.length > 0;
@@ -61,7 +73,7 @@ export class ChatComponent implements AfterViewChecked {
     this.sendPrompt();
   }
 
-  onButtonPress() {
+  onSendPress() {
     this.sendPrompt();
   }
 
@@ -74,12 +86,53 @@ export class ChatComponent implements AfterViewChecked {
       }
       this.isTextEntered = false;
       this.scrollToBottom();
-      this.messages.push({
+      this.chatService.messages.push({
         text: this.messageText,
         type: 'prompt',
         context: {},
       });
+
+      // this.chatService.health().subscribe({
+      //   next: (data) =>{
+      //     console.log(data);
+      //   }
+      // })
+
+      this.chatService.messages.push({
+        text: '',
+        type: 'response',
+        context: {},
+      });
+
+      let index = this.chatService.messages.length - 1;
+
+      this.chatService.startStream(this.messageText).subscribe({
+        next: (data) => {
+          if (data == '[CONTEXT-END]') {
+            this.contextActive = false;
+            return;
+          }
+
+          if (data == '[DONE]') {
+            return;
+          }
+
+          if (this.contextActive) {
+            this.chatService.messages[index].context = data;
+          } else {
+            console.log(data);
+            this.chatService.messages[index].text += data;
+          }
+        },
+        error: (error) => {
+          console.error('Error occurred:', error);
+        },
+      });
       this.messageText = '';
     }
+  }
+
+  finishReceive() {
+    console.log(this.response);
   }
 }

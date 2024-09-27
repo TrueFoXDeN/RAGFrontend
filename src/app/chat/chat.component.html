@@ -2,9 +2,9 @@
   <div class="h-12"></div>
   <div
     #chatContent
-    class="flex flex-1 flex-col max-h-[86vh] overflow-auto pb-8"
+    class="flex flex-1 flex-col max-h-[87vh] overflow-auto pb-8"
   >
-    @for (message of messages; track message) {
+    @for (message of chatService.messages; track message) {
       @if (message.type === "prompt") {
         <app-prompt-bubble [text]="message.text"></app-prompt-bubble>
       } @else if (message.type === "response") {
@@ -18,7 +18,7 @@
         <textarea
           #chatInput
           autoResize
-          class="text-white placeholder:!text-gray-400 leading-6 bg-transparent mx-5 focus:border-0 py-3 focus:outline-0 w-full resize-none overflow-auto"
+          class="text-white placeholder:!text-gray-400 leading-6 bg-transparent mx-5 focus:!outline-none focus-visible:!outline-none py-3 w-full resize-none overflow-auto"
           placeholder="Sende eine Nachricht"
           [(ngModel)]="messageText"
           (ngModelChange)="onInputChange()"
@@ -31,7 +31,7 @@
             'bg-white hover:bg-[#c1c1c1]': isTextEntered,
             'bg-[#676767] text-[#2f2f2f]': !isTextEntered,
           }"
-          (click)="onButtonPress()"
+          (click)="onSendPress()"
         >
           <i class="pi pi-arrow-up"></i>
         </div>
