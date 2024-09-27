@@ -4,7 +4,7 @@
     #chatContent
     class="flex flex-1 flex-col max-h-[87vh] overflow-auto pb-8"
   >
-    @for (message of chatService.messages; track message) {
+    @for (message of chatService.messages; track message.text) {
       @if (message.type === "prompt") {
         <app-prompt-bubble [text]="message.text"></app-prompt-bubble>
       } @else if (message.type === "response") {
