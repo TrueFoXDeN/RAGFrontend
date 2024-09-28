@@ -1,6 +1,7 @@
 # Schritt 1: Verwende das offizielle Node.js-Image als Basisimage
-FROM node:18 AS build
+FROM node:20-buster AS build
 
+RUN apt-get update && apt-get install -y openjdk-11-jdk
 # Schritt 2: Setze das Arbeitsverzeichnis innerhalb des Containers
 WORKDIR /app
 
@@ -9,6 +10,8 @@ COPY package*.json ./
 
 # Schritt 4: Installiere die Abhängigkeiten
 RUN npm install
+
+RUN npm install @openapitools/openapi-generator-cli -g
 
 # Schritt 5: Kopiere den Rest der Anwendung
 COPY . .
