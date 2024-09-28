@@ -25,7 +25,7 @@ RUN npm run build --prod
 FROM nginx:alpine
 
 # Schritt 8: Kopiere die kompilierten Angular-Dateien in den Nginx-Standardordner
-COPY --from=build /app/dist/RAGFrontend /usr/share/nginx/html
+COPY --from=build /app/dist/ragfrontend/browser /usr/share/nginx/html
 
 # Schritt 9: Exponiere den Standardport für Nginx
 EXPOSE 80
