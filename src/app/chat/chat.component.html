@@ -8,7 +8,10 @@
       @if (message.type === "prompt") {
         <app-prompt-bubble [text]="message.text"></app-prompt-bubble>
       } @else if (message.type === "response") {
-        <app-response-bubble [text]="message.text"></app-response-bubble>
+        <app-response-bubble
+          [text]="message.text"
+          [context]="message.context"
+        ></app-response-bubble>
       }
     }
   </div>

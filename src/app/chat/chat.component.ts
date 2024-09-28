@@ -13,6 +13,7 @@ import { NgClass } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ChatService } from './chat.service';
 import { RagService } from '../api-client';
+import { Message } from './message.model';
 import { HttpEventType } from '@angular/common/http';
 import { filter, map } from 'rxjs';
 
@@ -40,6 +41,7 @@ export class ChatComponent implements AfterViewChecked {
   context: string = '';
   contextActive = true;
   codeBlockActive: boolean = false;
+
   // messages: any = [];
 
   constructor(
@@ -89,17 +91,21 @@ export class ChatComponent implements AfterViewChecked {
       }
       this.isTextEntered = false;
       this.scrollToBottom();
-      this.chatService.messages.push({
+
+      let promptMessage: Message = {
         text: this.messageText,
         type: 'prompt',
-        context: {},
-      });
+        context: [],
+      };
+      this.chatService.messages.push(promptMessage);
 
-      this.chatService.messages.push({
+      let responseMessage: Message = {
         text: '',
         type: 'response',
-        context: {},
-      });
+        context: [],
+      };
+
+      this.chatService.messages.push(responseMessage);
 
       let index = this.chatService.messages.length - 1;
 
@@ -115,7 +121,8 @@ export class ChatComponent implements AfterViewChecked {
           }
 
           if (this.contextActive) {
-            this.chatService.messages[index].context = data;
+            data = JSON.parse(data);
+            this.chatService.messages[index].context = data.context;
           } else {
             let tempMessage = this.chatService.messages[index].text + data;
             // Herausfinden ob Anzahl ` im text ungerade ist -> wenn ja, innerhalb des codeblocks

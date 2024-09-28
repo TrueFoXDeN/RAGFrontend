@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { RagService } from '../api-client';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { Message } from './message.model';
 
 @Injectable({
   providedIn: 'root',
@@ -11,7 +12,8 @@ export class ChatService {
     private ragService: RagService,
     private http: HttpClient,
   ) {}
-  messages: any = [];
+
+  messages: Message[] = [];
   private apiUrl = '/api';
 
   startStream(query: string): Observable<any> {

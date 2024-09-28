@@ -1,3 +1,14 @@
-<div class="flex text-white mx-auto gap-6 max-w-[48rem] py-3 px-5 mb-5">
+<div
+  class="flex flex-col text-white mx-auto gap-6 max-w-[48rem] py-3 px-5 mb-5"
+>
+  <div class="flex gap-3 max-w-[48rem] overflow-auto pb-3">
+    @for (contextItem of context; track contextItem) {
+      <app-response-file
+        [file]="contextItem.file"
+        [page]="contextItem.page"
+        [text]="contextItem.text"
+      ></app-response-file>
+    }
+  </div>
   <markdown [data]="text"></markdown>
 </div>
