@@ -1,10 +1,10 @@
 {
   "/api": {
-    "target": "http://fastapi_app:8000",
+    "target": "http://192.168.140.22:8000",
     "secure": false,
     "changeOrigin": true,
     "pathRewrite": {
-      "^/api": "http://fastapi_app:8000"
+      "^/api": "http://192.168.140.22:8000"
     },
     "logLevel": "debug"
   }
