@@ -31,7 +31,7 @@ import { filter, map } from 'rxjs';
   templateUrl: './chat.component.html',
   styleUrl: './chat.component.sass',
 })
-export class ChatComponent implements AfterViewChecked {
+export class ChatComponent{
   @ViewChild('chatContent') private chatContent!: ElementRef;
   @ViewChild('chatInput') private chatInput!: ElementRef;
 
@@ -54,9 +54,9 @@ export class ChatComponent implements AfterViewChecked {
     this.isTextEntered = this.messageText.length > 0;
   }
 
-  ngAfterViewChecked() {
-    this.scrollToBottom();
-  }
+  // ngAfterViewChecked() {
+  //   this.scrollToBottom();
+  // }
 
   scrollToBottom(): void {
     try {
@@ -141,6 +141,7 @@ export class ChatComponent implements AfterViewChecked {
 
             this.chatService.messages[index].text += data;
             this.cdr.markForCheck();
+            this.scrollToBottom();
           }
         },
         error: (error) => {
