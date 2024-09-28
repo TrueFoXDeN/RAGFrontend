@@ -1,5 +1,6 @@
 <div
-  class="flex gap-2 text-white text-sm items-center py-3 pl-2 pr-3 rounded-3xl bg-[#424242]"
+  class="flex gap-2 text-white text-sm items-center py-3 pl-2 pr-3 rounded-3xl bg-[#424242] hover:cursor-pointer hover:bg-[#4c4c4c]"
+  (click)="showText()"
 >
   <i class="pi pi-file-pdf text-red-700 !text-3xl"></i>
   <div class="flex flex-col gap-3">
@@ -7,3 +8,11 @@
     Seite: {{ page }}
   </div>
 </div>
+<p-dialog [(visible)]="textVisible" [modal]="true" header="{{ file }}">
+  <div class="flex flex-col gap-3">
+    <div class="text-xl">Seite: {{ page }}</div>
+    <div class="max-w-[48rem] whitespace-pre-line">
+      {{ text }}
+    </div>
+  </div>
+</p-dialog>
