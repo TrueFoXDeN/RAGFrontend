@@ -1,10 +1,10 @@
 {
   "/api": {
-    "target": "http://localhost:8000",
+    "target": "http://fastapi_app:8000",
     "secure": false,
     "changeOrigin": true,
     "pathRewrite": {
-      "^/api": "http://localhost:8000"
+      "^/api": "http://fastapi_app:8000"
     },
     "logLevel": "debug"
   }
