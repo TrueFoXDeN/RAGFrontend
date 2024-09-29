@@ -14,7 +14,7 @@ export class ChatService {
   ) {}
 
   messages: Message[] = [];
-  private apiUrl = 'http://192.168.140.22:8000';
+  private apiUrl = '/api';
 
   startStream(query: string): Observable<any> {
     return new Observable<string>((observer) => {

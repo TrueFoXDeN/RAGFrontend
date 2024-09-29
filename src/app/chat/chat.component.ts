@@ -2,7 +2,7 @@ import {
   AfterViewChecked,
   ChangeDetectorRef,
   Component,
-  ElementRef,
+  ElementRef, OnInit,
   ViewChild,
 } from '@angular/core';
 import { ResponseBubbleComponent } from './response-bubble/response-bubble.component';
@@ -14,8 +14,6 @@ import { FormsModule } from '@angular/forms';
 import { ChatService } from './chat.service';
 import { RagService } from '../api-client';
 import { Message } from './message.model';
-import { HttpEventType } from '@angular/common/http';
-import { filter, map } from 'rxjs';
 
 @Component({
   selector: 'app-chat',
@@ -31,7 +29,7 @@ import { filter, map } from 'rxjs';
   templateUrl: './chat.component.html',
   styleUrl: './chat.component.sass',
 })
-export class ChatComponent{
+export class ChatComponent implements OnInit{
   @ViewChild('chatContent') private chatContent!: ElementRef;
   @ViewChild('chatInput') private chatInput!: ElementRef;
 
@@ -42,21 +40,28 @@ export class ChatComponent{
   contextActive = true;
   codeBlockActive: boolean = false;
 
-  // messages: any = [];
-
   constructor(
     protected chatService: ChatService,
     private ragService: RagService,
     private cdr: ChangeDetectorRef,
   ) {}
 
+  ngOnInit(): void {
+    this.chatService.health().subscribe({
+      next: (data) =>{
+        console.log(data)
+      }, error: (err) =>{
+        console.log(err)
+      }
+    })
+  }
+
+
+
   onInputChange() {
     this.isTextEntered = this.messageText.length > 0;
   }
 
-  // ngAfterViewChecked() {
-  //   this.scrollToBottom();
-  // }
 
   scrollToBottom(): void {
     try {

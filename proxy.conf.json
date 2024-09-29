@@ -1,10 +1,10 @@
 {
   "/api": {
-    "target": "http://192.168.140.22:8000",
+    "target": "http://localhost:8000",
     "secure": false,
     "changeOrigin": true,
     "pathRewrite": {
-      "^/api": "http://192.168.140.22:8000"
+      "^/api": "http://localhost:8000"
     },
     "logLevel": "debug"
   }
