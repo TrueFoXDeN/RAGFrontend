@@ -140,7 +140,7 @@ export class ChatComponent implements OnInit {
         }
 
         if (data === '[DONE]') {
-          console.log(this.chatService.messages);
+          this.finishReceive()
           return;
         }
 
@@ -172,11 +172,22 @@ export class ChatComponent implements OnInit {
   }
 
   finishReceive() {
-    console.log(this.response);
+    const chatRequest: ChatRequest = {
+      chat_id: this.chatService.currentChatId,
+      summary: this.chatService.messages[0].text.slice(0, 30),
+      messages: [...this.chatService.messages],
+    };
+    this.databaseService.saveChat(chatRequest).subscribe({
+      next: (res) => {
+        console.log(res);
+      },
+    });
   }
 
   initNewChat() {
     const chatId = uuid();
+    this.chatService.currentChatId = chatId
+    console.log(this.chatService.currentChatId)
 
     const chatRequest: ChatRequest = {
       chat_id: chatId,

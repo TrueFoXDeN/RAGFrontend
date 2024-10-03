@@ -6,6 +6,6 @@ export interface ContextItem {
 
 export interface Message {
   text: string;
-  type: 'response' | 'prompt'; // oder andere mögliche Typen
+  type: 'response' | 'prompt';
   context: ContextItem[];
 }
