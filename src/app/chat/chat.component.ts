@@ -2,7 +2,8 @@ import {
   AfterViewChecked,
   ChangeDetectorRef,
   Component,
-  ElementRef, OnInit,
+  ElementRef,
+  OnInit,
   ViewChild,
 } from '@angular/core';
 import { ResponseBubbleComponent } from './response-bubble/response-bubble.component';
@@ -12,8 +13,14 @@ import { Button } from 'primeng/button';
 import { NgClass } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ChatService } from './chat.service';
-import { RagService } from '../api-client';
+import {
+  ChatRequest,
+  DatabaseService,
+  MessageType,
+  RagService,
+} from '../api-client';
 import { Message } from './message.model';
+import { v4 as uuid } from 'uuid';
 
 @Component({
   selector: 'app-chat',
@@ -29,7 +36,7 @@ import { Message } from './message.model';
   templateUrl: './chat.component.html',
   styleUrl: './chat.component.sass',
 })
-export class ChatComponent implements OnInit{
+export class ChatComponent implements OnInit {
   @ViewChild('chatContent') private chatContent!: ElementRef;
   @ViewChild('chatInput') private chatInput!: ElementRef;
 
@@ -44,24 +51,23 @@ export class ChatComponent implements OnInit{
     protected chatService: ChatService,
     private ragService: RagService,
     private cdr: ChangeDetectorRef,
+    private databaseService: DatabaseService,
   ) {}
 
   ngOnInit(): void {
     this.chatService.health().subscribe({
-      next: (data) =>{
-        console.log(data)
-      }, error: (err) =>{
-        console.log(err)
-      }
-    })
+      next: (data) => {
+        console.log(data);
+      },
+      error: (err) => {
+        console.log(err);
+      },
+    });
   }
-
-
 
   onInputChange() {
     this.isTextEntered = this.messageText.length > 0;
   }
-
 
   scrollToBottom(): void {
     try {
@@ -89,6 +95,10 @@ export class ChatComponent implements OnInit{
 
   sendPrompt() {
     if (this.isTextEntered) {
+      if (this.chatService.messages.length == 0) {
+        this.initNewChat();
+      }
+
       const textareaElement = this.chatInput.nativeElement;
 
       if (textareaElement) {
@@ -111,55 +121,78 @@ export class ChatComponent implements OnInit{
       };
 
       this.chatService.messages.push(responseMessage);
+      this.processStream();
 
-      let index = this.chatService.messages.length - 1;
-
-      this.chatService.startStream(this.messageText).subscribe({
-        next: (data) => {
-          if (data === '[CONTEXT-END]') {
-            this.contextActive = false;
-            return;
-          }
-
-          if (data === '[DONE]') {
-            return;
-          }
-
-          if (this.contextActive) {
-            data = JSON.parse(data);
-            this.chatService.messages[index].context = data.context;
-          } else {
-            let tempMessage = this.chatService.messages[index].text + data;
-            // Herausfinden ob Anzahl ` im text ungerade ist -> wenn ja, innerhalb des codeblocks
-            this.codeBlockActive =
-              (tempMessage.match(/`/g) || []).length % 2 !== 0;
-            if (this.codeBlockActive) {
-              data = data.replaceAll('[NEWLINE][NEWLINE]', '  \n\n');
-            } else {
-              data = data.replaceAll(
-                '[NEWLINE][NEWLINE]',
-                '  \n&nbsp;&nbsp;\n',
-              );
-            }
-
-            data = data.replaceAll('[NEWLINE]', '  \n');
-
-            this.chatService.messages[index].text += data;
-            this.cdr.markForCheck();
-            this.scrollToBottom();
-          }
-        },
-        error: (error) => {
-          console.error('Error occurred:', error);
-        },
-      });
       this.messageText = '';
       this.contextActive = true;
       this.codeBlockActive = false;
     }
   }
 
+  processStream() {
+    let index = this.chatService.messages.length - 1;
+
+    this.chatService.startStream(this.messageText).subscribe({
+      next: (data) => {
+        if (data === '[CONTEXT-END]') {
+          this.contextActive = false;
+          return;
+        }
+
+        if (data === '[DONE]') {
+          console.log(this.chatService.messages);
+          return;
+        }
+
+        if (this.contextActive) {
+          data = JSON.parse(data);
+          this.chatService.messages[index].context = data.context;
+        } else {
+          let tempMessage = this.chatService.messages[index].text + data;
+          // Herausfinden ob Anzahl ` im text ungerade ist -> wenn ja, innerhalb des codeblocks
+          this.codeBlockActive =
+            (tempMessage.match(/`/g) || []).length % 2 !== 0;
+          if (this.codeBlockActive) {
+            data = data.replaceAll('[NEWLINE][NEWLINE]', '  \n\n');
+          } else {
+            data = data.replaceAll('[NEWLINE][NEWLINE]', '  \n&nbsp;&nbsp;\n');
+          }
+
+          data = data.replaceAll('[NEWLINE]', '  \n');
+
+          this.chatService.messages[index].text += data;
+          this.cdr.markForCheck();
+          this.scrollToBottom();
+        }
+      },
+      error: (error) => {
+        console.error('Error occurred:', error);
+      },
+    });
+  }
+
   finishReceive() {
     console.log(this.response);
+  }
+
+  initNewChat() {
+    const chatId = uuid();
+
+    const chatRequest: ChatRequest = {
+      chat_id: chatId,
+      summary: this.messageText.slice(0, 30),
+      messages: [
+        {
+          context: [],
+          text: this.messageText,
+          type: MessageType.Prompt,
+        },
+      ],
+    };
+    this.databaseService.saveChat(chatRequest).subscribe({
+      next: (res) => {
+        console.log(res);
+      },
+    });
   }
 }
