@@ -16,11 +16,13 @@ import { ChatService } from './chat.service';
 import {
   ChatRequestInput,
   DatabaseService,
+  MessageRequest,
   MessageType,
   RagService,
 } from '../api-client';
 import { Message } from './message.model';
 import { v4 as uuid } from 'uuid';
+import { HistoryService } from '../history/history.service';
 
 @Component({
   selector: 'app-chat',
@@ -52,6 +54,7 @@ export class ChatComponent implements OnInit {
     private ragService: RagService,
     private cdr: ChangeDetectorRef,
     private databaseService: DatabaseService,
+    private historyService: HistoryService,
   ) {}
 
   ngOnInit(): void {
@@ -172,26 +175,28 @@ export class ChatComponent implements OnInit {
   }
 
   finishReceive() {
-    // const chatRequest: ChatRequestInput = {
-    //   chat_id: this.chatService.currentChatId,
-    //   summary: this.chatService.messages[0].text.slice(0, 30),
-    //   messages: [...this.chatService.messages],
-    // };
-    // this.databaseService.saveChat(chatRequest).subscribe({
-    //   next: (res) => {
-    //     console.log(res);
-    //   },
-    // });
+    const lastMessage =
+      this.chatService.messages[this.chatService.messages.length - 1];
+    const messageRequest: MessageRequest = {
+      chat_id: this.chatService.currentChatId,
+      context: lastMessage.context,
+      text: lastMessage.text,
+      type: lastMessage.type,
+    };
+
+    this.databaseService.saveMessage(messageRequest).subscribe({
+      next: (res) => {},
+    });
   }
 
   initNewChat() {
     const chatId = uuid();
     this.chatService.currentChatId = chatId;
-    console.log(this.chatService.currentChatId);
+    const summary = this.messageText.slice(0, 30);
 
     const chatRequest: ChatRequestInput = {
       chat_id: chatId,
-      summary: this.messageText.slice(0, 30),
+      summary: summary,
       messages: [
         {
           context: [],
@@ -201,9 +206,13 @@ export class ChatComponent implements OnInit {
       ],
     };
     this.databaseService.saveChat(chatRequest).subscribe({
-      next: (res) => {
-        console.log(res);
-      },
+      next: (res) => {},
+    });
+
+    this.historyService.chatHistoryCollection.chats.unshift({
+      chat_id: chatId,
+      summary: summary,
+      created_on: new Date(),
     });
   }
 }
