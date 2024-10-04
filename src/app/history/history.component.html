@@ -1,1 +1,21 @@
-<div class="flex bg-[#171717] h-full w-64"></div>
+<div class="flex flex-col bg-[#171717] h-full w-64">
+  <div class="flex justify-center mt-3 w-full mb-5">
+    <div
+      class="flex justify-center items-center w-full mx-3 hover:bg-[#212121] rounded-lg h-10 cursor-pointer active:bg-[#2f2f2f]"
+    >
+      Neuer Chat
+    </div>
+  </div>
+  <div class="flex flex-col overflow-y-auto overflow-x-hidden">
+    @for (
+      chat of historyService.chatHistoryCollection.chats;
+      track chat.chat_id
+    ) {
+      <div
+        class="flex items-center text-sm mx-3 px-2 hover:bg-[#212121] active:bg-[#2f2f2f] cursor-pointer rounded-lg h-9"
+      >
+        {{ chat.summary }}
+      </div>
+    }
+  </div>
+</div>

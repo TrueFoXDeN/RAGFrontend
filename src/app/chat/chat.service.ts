@@ -14,7 +14,7 @@ export class ChatService {
   ) {}
 
   messages: Message[] = [];
-  currentChatId: string = ''
+  currentChatId: string = '';
   private apiUrl = '/api';
 
   startStream(query: string): Observable<any> {

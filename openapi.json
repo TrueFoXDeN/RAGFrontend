@@ -205,6 +205,25 @@
       }
     },
     "/db/chat": {
+      "get": {
+        "tags": [
+          "Database"
+        ],
+        "summary": "Db Get Chat Route",
+        "operationId": "get_chats",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ChatCollectionResponse"
+                }
+              }
+            }
+          }
+        }
+      },
       "post": {
         "tags": [
           "Database"
@@ -215,7 +234,90 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/ChatRequest"
+                "$ref": "#/components/schemas/ChatRequest-Input"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/db/chat/{id}": {
+      "get": {
+        "tags": [
+          "Database"
+        ],
+        "summary": "Db Get Chat By Id Route",
+        "operationId": "get_chat_by_id",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ChatRequest-Output"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/db/message": {
+      "post": {
+        "tags": [
+          "Database"
+        ],
+        "summary": "Db Save Messafe Route",
+        "operationId": "save_message",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MessageRequest"
               }
             }
           },
@@ -248,7 +350,23 @@
   },
   "components": {
     "schemas": {
-      "ChatRequest": {
+      "ChatCollectionResponse": {
+        "properties": {
+          "chats": {
+            "items": {
+              "$ref": "#/components/schemas/ChatResponse"
+            },
+            "type": "array",
+            "title": "Chats"
+          }
+        },
+        "type": "object",
+        "required": [
+          "chats"
+        ],
+        "title": "ChatCollectionResponse"
+      },
+      "ChatRequest-Input": {
         "properties": {
           "chat_id": {
             "type": "string",
@@ -273,6 +391,56 @@
           "messages"
         ],
         "title": "ChatRequest"
+      },
+      "ChatRequest-Output": {
+        "properties": {
+          "chat_id": {
+            "type": "string",
+            "title": "Chat Id"
+          },
+          "summary": {
+            "type": "string",
+            "title": "Summary"
+          },
+          "messages": {
+            "items": {
+              "$ref": "#/components/schemas/Message"
+            },
+            "type": "array",
+            "title": "Messages"
+          }
+        },
+        "type": "object",
+        "required": [
+          "chat_id",
+          "summary",
+          "messages"
+        ],
+        "title": "ChatRequest"
+      },
+      "ChatResponse": {
+        "properties": {
+          "chat_id": {
+            "type": "string",
+            "title": "Chat Id"
+          },
+          "summary": {
+            "type": "string",
+            "title": "Summary"
+          },
+          "created_on": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created On"
+          }
+        },
+        "type": "object",
+        "required": [
+          "chat_id",
+          "summary",
+          "created_on"
+        ],
+        "title": "ChatResponse"
       },
       "Context": {
         "properties": {
@@ -334,6 +502,36 @@
           "type"
         ],
         "title": "Message"
+      },
+      "MessageRequest": {
+        "properties": {
+          "context": {
+            "items": {
+              "$ref": "#/components/schemas/Context"
+            },
+            "type": "array",
+            "title": "Context"
+          },
+          "text": {
+            "type": "string",
+            "title": "Text"
+          },
+          "type": {
+            "$ref": "#/components/schemas/MessageType"
+          },
+          "chat_id": {
+            "type": "string",
+            "title": "Chat Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "context",
+          "text",
+          "type",
+          "chat_id"
+        ],
+        "title": "MessageRequest"
       },
       "MessageType": {
         "type": "string",

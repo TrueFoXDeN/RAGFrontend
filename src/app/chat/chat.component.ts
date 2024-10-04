@@ -14,7 +14,7 @@ import { NgClass } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ChatService } from './chat.service';
 import {
-  ChatRequest,
+  ChatRequestInput,
   DatabaseService,
   MessageType,
   RagService,
@@ -140,7 +140,7 @@ export class ChatComponent implements OnInit {
         }
 
         if (data === '[DONE]') {
-          this.finishReceive()
+          this.finishReceive();
           return;
         }
 
@@ -172,24 +172,24 @@ export class ChatComponent implements OnInit {
   }
 
   finishReceive() {
-    const chatRequest: ChatRequest = {
-      chat_id: this.chatService.currentChatId,
-      summary: this.chatService.messages[0].text.slice(0, 30),
-      messages: [...this.chatService.messages],
-    };
-    this.databaseService.saveChat(chatRequest).subscribe({
-      next: (res) => {
-        console.log(res);
-      },
-    });
+    // const chatRequest: ChatRequestInput = {
+    //   chat_id: this.chatService.currentChatId,
+    //   summary: this.chatService.messages[0].text.slice(0, 30),
+    //   messages: [...this.chatService.messages],
+    // };
+    // this.databaseService.saveChat(chatRequest).subscribe({
+    //   next: (res) => {
+    //     console.log(res);
+    //   },
+    // });
   }
 
   initNewChat() {
     const chatId = uuid();
-    this.chatService.currentChatId = chatId
-    console.log(this.chatService.currentChatId)
+    this.chatService.currentChatId = chatId;
+    console.log(this.chatService.currentChatId);
 
-    const chatRequest: ChatRequest = {
+    const chatRequest: ChatRequestInput = {
       chat_id: chatId,
       summary: this.messageText.slice(0, 30),
       messages: [
