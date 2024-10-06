@@ -66,6 +66,20 @@ export class ChatComponent implements OnInit {
         console.log(err);
       },
     });
+
+    this.chatService.setFocusEvent.subscribe({
+      next: (data) => {
+        this.chatInput.nativeElement.focus();
+      },
+    });
+
+    this.chatService.scrollToBottomEvent.subscribe({
+      next: (data) => {
+        setTimeout(() => {
+          this.scrollToBottom();
+        }, 0);
+      },
+    });
   }
 
   onInputChange() {

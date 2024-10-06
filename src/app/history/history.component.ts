@@ -1,7 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { Button } from 'primeng/button';
-import { ChatCollectionResponse, DatabaseService } from '../api-client';
+import {
+  ChatCollectionResponse,
+  ChatRequestOutput,
+  DatabaseService,
+} from '../api-client';
 import { HistoryService } from './history.service';
+import { ChatService } from '../chat/chat.service';
 
 @Component({
   selector: 'app-history',
@@ -14,6 +19,7 @@ export class HistoryComponent implements OnInit {
   constructor(
     private databaseService: DatabaseService,
     protected historyService: HistoryService,
+    private chatService: ChatService,
   ) {}
 
   ngOnInit(): void {
@@ -27,5 +33,24 @@ export class HistoryComponent implements OnInit {
         };
       },
     });
+  }
+
+  newChat() {
+    this.chatService.currentChatId = '';
+    this.chatService.messages = [];
+    this.chatService.setFocusEvent.next();
+  }
+
+  loadChat(chat_id: string) {
+    if (this.chatService.currentChatId !== chat_id) {
+      this.databaseService.getChatById(chat_id).subscribe({
+        next: (data: ChatRequestOutput) => {
+          this.chatService.currentChatId = data.chat_id;
+          this.chatService.messages = [...data.messages];
+          this.chatService.setFocusEvent.next();
+          this.chatService.scrollToBottomEvent.next();
+        },
+      });
+    }
   }
 }
